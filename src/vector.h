@@ -1,18 +1,18 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-typedef struct vector vector;
+typedef struct Vector Vector;
 
-struct vector {
+struct Vector {
   int size;
   float *data;
 };
 
-vector *new_vector(int size);
-void free_vector(vector *v);
-float dot_product_vector(vector *v1, vector *v2);
-float length_vector(vector *v);
-void set_random_vector(vector *v);
-void print_vector(vector *v);
+Vector *new_vector(int size);
+void free_vector(Vector *v);
+float dot_product_vector(Vector *v1, Vector *v2);
+float length_vector(Vector *v);
+void set_random_vector(Vector *v);
+void print_vector(Vector *v);
 
 #endif  // VECTOR_H

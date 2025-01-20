@@ -5,4 +5,6 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(Nearest_neighbor_search src/main.c
         src/vector.c
-        src/vector.h)
+        src/vector.h
+        src/vector_store.c
+        src/vector_store.h)
