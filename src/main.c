@@ -25,8 +25,6 @@ void print_pq(PgNode *node) {
 }
 
 int main(void) {
-  PriorityQueue *queue = new_priority_queue();
-
   int dimensions = 1536;
   int size = 100;
 
@@ -52,6 +50,9 @@ int main(void) {
     printf("%f ", result_dists[i]);
   }
   printf("\n");
+
+  free_vector(query);
+  free_vector_store(store);
 
   return 0;
 }

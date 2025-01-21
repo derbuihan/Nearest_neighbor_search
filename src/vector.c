@@ -33,7 +33,7 @@ float length_vector(Vector *v) { return sqrtf(dot_product_vector(v, v)); }
 static float rand_normal(float mean, float std) {
   float u1 = (float)rand() / (float)RAND_MAX;
   float u2 = (float)rand() / (float)RAND_MAX;
-  float M_PI_F = 3.14159265358979323846f;
+  float M_PI_F = M_PI;
   float z = sqrtf(-2 * logf(u1)) * cosf(2 * M_PI_F * u2);
   return mean + z * std;
 }

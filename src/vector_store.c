@@ -5,10 +5,10 @@
 
 #include "priority_queue.h"
 
-Node *new_node(int id, Vector *vector) {
+Node *new_node(int id, Vector *v) {
   Node *n = malloc(sizeof(Node));
   n->id = id;
-  n->vector = vector;
+  n->vector = v;
   n->next = NULL;
   return n;
 }
@@ -71,4 +71,6 @@ void search_nearest_vector(VectorStore *store, Vector *query, int k,
     result_ids[i] = id;
     result_dists[i] = dist;
   }
+
+  free_priority_queue(queue);
 }
