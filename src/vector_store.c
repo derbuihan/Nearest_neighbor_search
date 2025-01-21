@@ -1,9 +1,9 @@
 #include "vector_store.h"
 
-#include <float.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "priority_queue.h"
 
 Node *new_node(int id, Vector *vector) {
   Node *n = malloc(sizeof(Node));
@@ -55,35 +55,20 @@ void search_nearest_vector(VectorStore *store, Vector *query, int k,
     exit(1);
   }
 
-  int size = store->num_vectors;
-  int *ids = malloc(size * sizeof(int));
-  float *dists = malloc(size * sizeof(float));
+  PriorityQueue *queue = new_priority_queue();
 
   for (Node *node = store->head; node; node = node->next) {
     Vector *vector = node->vector;
-    ids[node->id - 1] = node->id;
-    dists[node->id - 1] = dot_product_vector(query, vector);
+    int id = node->id;
+    float dist = dot_product_vector(query, vector);
+    push_priority_queue(queue, id, dist);
   }
 
   for (int i = 0; i < k; i++) {
-    result_ids[i] = -1;
-    result_dists[i] = -1;
+    int id;
+    float dist;
+    pop_priority_queue(queue, &id, &dist);
+    result_ids[i] = id;
+    result_dists[i] = dist;
   }
-
-  for (int i = 0; i < size; i++) {
-    for (int j = 0; j < k; j++) {
-      if (dists[i] > result_dists[j]) {
-        for (int l = k - 1; l > j; l--) {
-          result_ids[l] = result_ids[l - 1];
-          result_dists[l] = result_dists[l - 1];
-        }
-        result_ids[j] = ids[i];
-        result_dists[j] = dists[i];
-        break;
-      }
-    }
-  }
-
-  free(ids);
-  free(dists);
 }
