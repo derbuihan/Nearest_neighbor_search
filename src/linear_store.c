@@ -1,11 +1,11 @@
-#include "vector_store.h"
+#include "linear_store.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "priority_queue.h"
 
-Node *new_node(int id, Vector *v) {
+static Node *new_node(int id, Vector *v) {
   Node *n = malloc(sizeof(Node));
   n->id = id;
   n->vector = v;
@@ -13,19 +13,19 @@ Node *new_node(int id, Vector *v) {
   return n;
 }
 
-void free_node(Node *node) {
+static void free_node(Node *node) {
   free_vector(node->vector);
   free(node);
 }
 
-VectorStore *new_vector_store() {
-  VectorStore *store = malloc(sizeof(VectorStore));
+LinearStore *new_linear_store() {
+  LinearStore *store = malloc(sizeof(LinearStore));
   store->head = NULL;
   store->num_vectors = 0;
   return store;
 }
 
-void free_vector_store(VectorStore *store) {
+void free_linear_store(LinearStore *store) {
   Node *node = store->head;
   while (node) {
     Node *next = node->next;
@@ -35,21 +35,14 @@ void free_vector_store(VectorStore *store) {
   free(store);
 }
 
-void add_vector(VectorStore *store, Vector *v) {
+void add_vector_linear_store(LinearStore *store, Vector *v) {
   Node *node = new_node(++store->num_vectors, v);
   node->next = store->head;
   store->head = node;
 }
 
-void print_vector_store(VectorStore *store) {
-  for (Node *node = store->head; node; node = node->next) {
-    printf("Vector %d: ", node->id);
-    print_vector(node->vector);
-  }
-}
-
-void search_nearest_vector(VectorStore *store, Vector *query, int k,
-                           int *result_ids, float *result_dists) {
+void search_vector_linear_store(LinearStore *store, Vector *query, int k,
+                                int *result_ids, float *result_dists) {
   if (store->num_vectors < k) {
     printf("Error: not enough vectors in the store\n");
     exit(1);
@@ -73,4 +66,11 @@ void search_nearest_vector(VectorStore *store, Vector *query, int k,
   }
 
   free_priority_queue(queue);
+}
+
+void print_linear_store(LinearStore *store) {
+  for (Node *node = store->head; node; node = node->next) {
+    printf("Vector %d: ", node->id);
+    print_vector(node->vector);
+  }
 }
