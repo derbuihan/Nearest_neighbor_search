@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "load_datasets.h"
 #include "vector.h"
 #include "vector_store.h"
 
@@ -14,6 +15,9 @@ VectorStore *create_test_vector_store(int dimensions, int size) {
 }
 
 int main(void) {
+  char *filename = "../datasets/awsdocs.parquet";
+  read_parquet(filename);
+
   int dimensions = 1536;
   int size = 327003;
 
