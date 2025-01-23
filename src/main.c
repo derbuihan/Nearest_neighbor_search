@@ -16,13 +16,13 @@ VectorStore *create_test_vector_store(int dimensions, int size) {
 
 int main(void) {
   char *filename = "../datasets/awsdocs.parquet";
-  read_parquet(filename);
+  Dataset *dataset = load_dataset(filename);
+  printf("Number of records: %d\n", dataset->num_records);
+  free_dataset(dataset);
 
   int dimensions = 1536;
   int size = 327003;
-
   VectorStore *store = create_test_vector_store(dimensions, size);
-  // print_vector_store(store);
 
   Vector *query = new_vector(dimensions);
   set_random_vector(query);

@@ -6,15 +6,18 @@
 
 VectorStore *new_vector_store(StoreType type) {
   VectorStore *store = malloc(sizeof(VectorStore));
+  store->type = type;
 
   switch (type) {
     case STORE_LINEAR:
-      store->store = new_linear_store();
-      store->type = type;
-      store->add_vector = (void (*)(void *, Vector *))add_vector_linear_store;
-      store->search_vectors = (void (*)(void *, Vector *, int, int *,
-                                        float *))search_vectors_linear_store;
+      store->linear_store = new_linear_store();
       break;
+    case STORE_NSW:
+      // store->nsw_store = new_nsw_store();
+      break;
+    default:
+      free(store);
+      return NULL;
   }
 
   return store;
@@ -23,15 +26,41 @@ VectorStore *new_vector_store(StoreType type) {
 void free_vector_store(VectorStore *store) {
   switch (store->type) {
     case STORE_LINEAR:
-      free_linear_store(store->store);
+      free_linear_store(store->linear_store);
+      break;
+    case STORE_NSW:
+      // free_nsw_store(store->nsw_store);
+      break;
+    default:
       break;
   }
-
   free(store);
 }
 
-void add_vector(VectorStore *store, Vector *v) { store->add_vector(store, v); }
+void add_vector(VectorStore *store, Vector *v) {
+  switch (store->type) {
+    case STORE_LINEAR:
+      add_vector_linear_store(store->linear_store, v);
+      break;
+    case STORE_NSW:
+      // add_vector_nsw_store(store->nsw_store, v);
+      break;
+    default:
+      break;
+  }
+}
 void search_vectors(VectorStore *store, Vector *query, int top_k,
                     int *result_ids, float *result_dists) {
-  store->search_vectors(store, query, top_k, result_ids, result_dists);
+  switch (store->type) {
+    case STORE_LINEAR:
+      search_vectors_linear_store(store->linear_store, query, top_k, result_ids,
+                                  result_dists);
+      break;
+    case STORE_NSW:
+      // search_vectors_nsw_store(store->nsw_store, query, top_k, result_ids,
+      //                          result_dists);
+      break;
+    default:
+      break;
+  }
 }
