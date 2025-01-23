@@ -12,8 +12,8 @@ VectorStore *new_vector_store(StoreType type) {
       store->store = new_linear_store();
       store->type = type;
       store->add_vector = (void (*)(void *, Vector *))add_vector_linear_store;
-      store->search_vector = (void (*)(void *, Vector *, int, int *,
-                                       float *))search_vector_linear_store;
+      store->search_vectors = (void (*)(void *, Vector *, int, int *,
+                                        float *))search_vectors_linear_store;
       break;
   }
 
@@ -31,7 +31,7 @@ void free_vector_store(VectorStore *store) {
 }
 
 void add_vector(VectorStore *store, Vector *v) { store->add_vector(store, v); }
-void search_vector(VectorStore *store, Vector *query, int k, int *result_ids,
-                   float *result_dists) {
-  store->search_vector(store, query, k, result_ids, result_dists);
+void search_vectors(VectorStore *store, Vector *query, int top_k,
+                    int *result_ids, float *result_dists) {
+  store->search_vectors(store, query, top_k, result_ids, result_dists);
 }

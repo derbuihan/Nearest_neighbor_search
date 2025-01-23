@@ -41,9 +41,9 @@ void add_vector_linear_store(LinearStore *store, Vector *v) {
   store->head = node;
 }
 
-void search_vector_linear_store(LinearStore *store, Vector *query, int k,
-                                int *result_ids, float *result_dists) {
-  if (store->num_vectors < k) {
+void search_vectors_linear_store(LinearStore *store, Vector *query, int top_k,
+                                 int *result_ids, float *result_dists) {
+  if (store->num_vectors < top_k) {
     printf("Error: not enough vectors in the store\n");
     exit(1);
   }
@@ -57,7 +57,7 @@ void search_vector_linear_store(LinearStore *store, Vector *query, int k,
     push_priority_queue(queue, id, dist);
   }
 
-  for (int i = 0; i < k; i++) {
+  for (int i = 0; i < top_k; i++) {
     int id;
     float dist;
     pop_priority_queue(queue, &id, &dist);

@@ -11,4 +11,6 @@ add_executable(Nearest_neighbor_search src/main.c
         src/priority_queue.c
         src/priority_queue.h
         src/vector_store.c
-        src/vector_store.h)
+        src/vector_store.h
+        src/nsw_store.c
+        src/nsw_store.h)

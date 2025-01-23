@@ -19,8 +19,8 @@ struct LinearStore {
 LinearStore *new_linear_store();
 void free_linear_store(LinearStore *store);
 void add_vector_linear_store(LinearStore *store, Vector *v);
-void search_vector_linear_store(LinearStore *store, Vector *query, int k,
-                                int *result_ids, float *result_dists);
+void search_vectors_linear_store(LinearStore *store, Vector *query, int top_k,
+                                 int *result_ids, float *result_dists);
 void print_linear_store(LinearStore *store);
 
 #endif  // LINEAR_STORE_H

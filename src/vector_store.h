@@ -12,14 +12,14 @@ struct VectorStore {
   StoreType type;
   void *store;
   void (*add_vector)(void *store, Vector *v);
-  void (*search_vector)(void *store, Vector *query, int k, int *result_ids,
-                        float *result_dists);
+  void (*search_vectors)(void *store, Vector *query, int top_k, int *result_ids,
+                         float *result_dists);
 };
 
 VectorStore *new_vector_store(StoreType type);
 void free_vector_store(VectorStore *store);
 void add_vector(VectorStore *store, Vector *v);
-void search_vector(VectorStore *store, Vector *query, int k, int *result_ids,
-                   float *result_dists);
+void search_vectors(VectorStore *store, Vector *query, int top_k,
+                    int *result_ids, float *result_dists);
 
 #endif  // VECTOR_STORE_H

@@ -23,19 +23,19 @@ int main(void) {
   Vector *query = new_vector(dimensions);
   set_random_vector(query);
 
-  int k = 10;
-  int result_ids[k];
-  float result_dists[k];
-  search_vector(store, query, k, result_ids, result_dists);
+  int top_k = 10;
+  int result_ids[top_k];
+  float result_dists[top_k];
+  search_vectors(store, query, top_k, result_ids, result_dists);
 
   printf("Results: ");
-  for (int i = 0; i < k; i++) {
+  for (int i = 0; i < top_k; i++) {
     printf("%d ", result_ids[i]);
   }
   printf("\n");
 
   printf("Distances: ");
-  for (int i = 0; i < k; i++) {
+  for (int i = 0; i < top_k; i++) {
     printf("%f ", result_dists[i]);
   }
   printf("\n");
