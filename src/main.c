@@ -1,8 +1,26 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "load_datasets.h"
 #include "vector.h"
 #include "vector_store.h"
+
+void set_vector_store_from_dataset(VectorStore *store, Dataset *dataset,
+                                   int size) {
+  if (dataset->num_records < size) {
+    printf("Error: not enough vectors in the dataset\n");
+    exit(1);
+  }
+
+  for (int i = 0; i < size; i++) {
+    Record *record = &dataset->records[i];
+    Vector *v = new_vector(record->embedding_size);
+    for (int j = 0; j < record->embedding_size; j++) {
+      v->data[j] = record->embedding[j];
+    }
+    add_vector(store, v);
+  }
+}
 
 VectorStore *create_test_vector_store(int dimensions, int size) {
   VectorStore *store = new_vector_store(STORE_LINEAR);
@@ -18,24 +36,10 @@ int main(void) {
   char *filename = "../datasets/awsdocs.parquet";
 
   Dataset *dataset = load_dataset(filename);
-  printf("Number of records: %d\n", dataset->num_records);
-
-  for (int i = 0; i < dataset->num_records; i++) {
-    Record *record = &dataset->records[i];
-    printf("Record %d: %s\n", i, record->url);
-    printf("Content: %s\n", record->content);
-    printf("Embedding size: %d\n", record->embedding_size);
-    for (int j = 0; j < record->embedding_size; j++) {
-      printf("%f ", record->embedding[j]);
-    }
-    break;
-  }
-
-  free_dataset(dataset);
-
   int dimensions = 1536;
-  int size = 100;  // 327003;
+  int size = 327003;
   VectorStore *store = create_test_vector_store(dimensions, size);
+  set_vector_store_from_dataset(store, dataset, size);
 
   Vector *query = new_vector(dimensions);
   set_random_vector(query);
@@ -57,6 +61,7 @@ int main(void) {
   }
   printf("\n");
 
+  free_dataset(dataset);
   free_vector(query);
   free_vector_store(store);
 
