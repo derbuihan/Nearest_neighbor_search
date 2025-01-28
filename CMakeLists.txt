@@ -34,3 +34,13 @@ target_link_libraries(Nearest_neighbor_search
         PkgConfig::ARROW
         PkgConfig::PARQUET
 )
+
+enable_testing()
+
+add_executable(test_vector tests/test_vector.c src/vector.c)
+target_include_directories(test_vector PRIVATE ${CMAKE_SOURCE_DIR}/src)
+add_test(NAME VectorTest COMMAND test_vector)
+
+add_executable(test_priority_queue tests/test_priority_queue.c src/priority_queue.c)
+target_include_directories(test_priority_queue PRIVATE ${CMAKE_SOURCE_DIR}/src)
+add_test(NAME PriorityQueueTest COMMAND test_priority_queue)
