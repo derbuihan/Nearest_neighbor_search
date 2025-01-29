@@ -23,6 +23,6 @@ void test_load_dataset() {
 int main() {
   test_load_dataset();
 
-  printf("All vector tests passed!\n");
+  printf("All load dataset tests passed!\n");
   return 0;
 }

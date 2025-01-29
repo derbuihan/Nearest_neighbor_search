@@ -58,6 +58,6 @@ int main() {
   test_add_vector_linear_store();
   test_search_vectors_linear_store();
 
-  printf("All vector tests passed!\n");
+  printf("All linear store tests passed!\n");
   return 0;
 }

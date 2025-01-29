@@ -31,7 +31,8 @@ set(TEST_SRCS
         tests/test_vector.c
         tests/test_priority_queue.c
         tests/test_load_datasets.c
-        tests/test_linear_store.c)
+        tests/test_linear_store.c
+        tests/test_vector_store.c)
 foreach (test_src ${TEST_SRCS})
     get_filename_component(test_name ${test_src} NAME_WE)
     add_executable(${test_name} ${test_src} ${SRCS})
