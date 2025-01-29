@@ -39,6 +39,7 @@ enable_testing()
 
 add_executable(test_vector tests/test_vector.c src/vector.c)
 target_include_directories(test_vector PRIVATE ${CMAKE_SOURCE_DIR}/src)
+target_link_libraries(test_vector PRIVATE m)
 add_test(NAME VectorTest COMMAND test_vector)
 
 add_executable(test_priority_queue tests/test_priority_queue.c src/priority_queue.c)
