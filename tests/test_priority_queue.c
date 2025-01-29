@@ -3,14 +3,6 @@
 
 #include "priority_queue.h"
 
-/*
-PriorityQueue *new_priority_queue();
-void free_priority_queue(PriorityQueue *queue);
-void push_priority_queue(PriorityQueue *queue, int id, float priority);
-void pop_priority_queue(PriorityQueue *queue, int *result_id,
-float *result_priority);
-*/
-
 void test_new_priority_queue() {
   PriorityQueue *queue = new_priority_queue();
   assert(queue != NULL);

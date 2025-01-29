@@ -30,6 +30,12 @@ float dot_product_vector(Vector *v1, Vector *v2) {
 }
 float length_vector(Vector *v) { return sqrtf(dot_product_vector(v, v)); }
 
+void set_data_vector(Vector *v, float *data) {
+  for (int i = 0; i < v->size; i++) {
+    v->data[i] = data[i];
+  }
+}
+
 static float rand_normal(float mean, float std) {
   float u1 = (float)rand() / (float)RAND_MAX;
   float u2 = (float)rand() / (float)RAND_MAX;

@@ -40,6 +40,15 @@ void test_length_vector() {
   free_vector(vec);
 }
 
+void test_set_data_vector() {
+  Vector *vec = new_vector(3);
+  set_data_vector(vec, (float[]){1.0, 2.0, 3.0});
+  assert(vec->data[0] == 1.0);
+  assert(vec->data[1] == 2.0);
+  assert(vec->data[2] == 3.0);
+  assert(vec->size == 3);
+}
+
 void test_set_random_vector() {
   Vector *vec = new_vector(2);
   set_random_vector(vec);
@@ -47,7 +56,6 @@ void test_set_random_vector() {
   float length = length_vector(vec);
   assert(fabs(length - 1.0) < 1e-6);
 
-  // ランダム性の確認
   Vector *vec2 = new_vector(2);
   set_random_vector(vec2);
   assert(vec->data[0] != vec2->data[0] || vec->data[1] != vec2->data[1]);

@@ -9,7 +9,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(ARROW REQUIRED IMPORTED_TARGET arrow)
 pkg_check_modules(PARQUET REQUIRED IMPORTED_TARGET parquet)
 
-add_executable(Nearest_neighbor_search src/main.c
+set(SRCS
         src/vector.c
         src/vector.h
         src/linear_store.c
@@ -22,26 +22,20 @@ add_executable(Nearest_neighbor_search src/main.c
         src/nsw_store.h
         src/load_datasets.cpp
         src/load_datasets.h)
-
-target_include_directories(Nearest_neighbor_search
-        PRIVATE
-        ${ARROW_INCLUDE_DIRS}
-        ${PARQUET_INCLUDE_DIRS}
-)
-
-target_link_libraries(Nearest_neighbor_search
-        PRIVATE
-        PkgConfig::ARROW
-        PkgConfig::PARQUET
-)
+add_executable(Nearest_neighbor_search src/main.c ${SRCS})
+target_include_directories(Nearest_neighbor_search PRIVATE ${ARROW_INCLUDE_DIRS} ${PARQUET_INCLUDE_DIRS})
+target_link_libraries(Nearest_neighbor_search PRIVATE PkgConfig::ARROW PkgConfig::PARQUET)
 
 enable_testing()
-
-add_executable(test_vector tests/test_vector.c src/vector.c)
-target_include_directories(test_vector PRIVATE ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(test_vector PRIVATE m)
-add_test(NAME VectorTest COMMAND test_vector)
-
-add_executable(test_priority_queue tests/test_priority_queue.c src/priority_queue.c)
-target_include_directories(test_priority_queue PRIVATE ${CMAKE_SOURCE_DIR}/src)
-add_test(NAME PriorityQueueTest COMMAND test_priority_queue)
+set(TEST_SRCS
+        tests/test_vector.c
+        tests/test_priority_queue.c
+        tests/test_load_datasets.c
+        tests/test_linear_store.c)
+foreach (test_src ${TEST_SRCS})
+    get_filename_component(test_name ${test_src} NAME_WE)
+    add_executable(${test_name} ${test_src} ${SRCS})
+    target_include_directories(${test_name} PRIVATE ${CMAKE_SOURCE_DIR}/src)
+    target_link_libraries(${test_name} PRIVATE PkgConfig::ARROW PkgConfig::PARQUET)
+    add_test(NAME ${test_name} COMMAND ${test_name})
+endforeach ()
