@@ -41,6 +41,7 @@ void add_vector(VectorStore *store, Vector *v) {
   switch (store->type) {
     case STORE_LINEAR:
       add_vector_linear_store(store->linear_store, v);
+      store->num_vectors++;
       break;
     case STORE_NSW:
       // add_vector_nsw_store(store->nsw_store, v);

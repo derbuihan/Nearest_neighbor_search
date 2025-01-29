@@ -12,6 +12,7 @@ typedef enum {
 typedef struct VectorStore VectorStore;
 struct VectorStore {
   StoreType type;
+  int num_vectors;
 
   union {
     LinearStore *linear_store;
