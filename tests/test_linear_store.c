@@ -50,6 +50,7 @@ void test_search_vectors_linear_store() {
   assert(result_dists[1] == 1.0);
   assert(result_dists[2] == 0.0);
 
+  free_vector(query);
   free_linear_store(store);
 }
 

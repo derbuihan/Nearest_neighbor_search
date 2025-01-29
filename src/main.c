@@ -1,18 +1,11 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "load_datasets.h"
 #include "vector.h"
 #include "vector_store.h"
 
-void set_vector_store_from_dataset(VectorStore *store, Dataset *dataset,
-                                   int size) {
-  if (dataset->num_records < size) {
-    printf("Error: not enough vectors in the dataset\n");
-    exit(1);
-  }
-
-  for (int i = 0; i < size; i++) {
+void set_vector_store_from_dataset(VectorStore *store, Dataset *dataset) {
+  for (int i = 0; i < dataset->num_records; i++) {
     Record *record = &dataset->records[i];
     Vector *v = new_vector(record->embedding_size);
     for (int j = 0; j < record->embedding_size; j++) {
@@ -33,37 +26,39 @@ VectorStore *create_test_vector_store(int dimensions, int size) {
 }
 
 int main(void) {
-  char *filename = "../datasets/awsdocs.parquet";
+  char *awsdocs = "../datasets/awsdocs.parquet";
+  char *querydocs = "../datasets/query.parquet";
 
-  Dataset *dataset = load_dataset(filename);
-  int dimensions = 1536;
-  int size = 327003;
-  VectorStore *store = create_test_vector_store(dimensions, size);
-  set_vector_store_from_dataset(store, dataset, size);
+  // Setup VectorStore
+  Dataset *dataset = load_dataset(awsdocs);
+  VectorStore *store = new_vector_store(STORE_LINEAR);
+  set_vector_store_from_dataset(store, dataset);
 
-  Vector *query = new_vector(dimensions);
-  set_random_vector(query);
+  // Setup Query
+  Dataset *query_dataset = load_dataset(querydocs);
+  Record *query_record = &query_dataset->records[1];
+  Vector *query = new_vector(query_record->embedding_size);
+  set_data_vector(query, query_record->embedding);
+  printf("Query: %s\n", query_record->url);
 
+  // Search
   int top_k = 10;
   int result_ids[top_k];
   float result_dists[top_k];
   search_vectors(store, query, top_k, result_ids, result_dists);
 
-  printf("Results: ");
+  // Print Results
   for (int i = 0; i < top_k; i++) {
-    printf("%d ", result_ids[i]);
+    Record *record = &dataset->records[result_ids[i]];
+    printf("Results: id: %d, distance: %f, url: %s\n", result_ids[i],
+           result_dists[i], record->url);
   }
-  printf("\n");
 
-  printf("Distances: ");
-  for (int i = 0; i < top_k; i++) {
-    printf("%f ", result_dists[i]);
-  }
-  printf("\n");
-
+  // Free Memory
   free_dataset(dataset);
-  free_vector(query);
   free_vector_store(store);
+  free_vector(query);
+  free_dataset(query_dataset);
 
   return 0;
 }

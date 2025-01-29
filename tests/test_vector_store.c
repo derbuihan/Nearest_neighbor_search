@@ -34,6 +34,7 @@ void test_store_linear() {
   assert(result_dists[1] == 1.0);
   assert(result_dists[2] == 0.0);
 
+  free_vector(query);
   free_vector_store(store);
 }
 
