@@ -15,16 +15,6 @@ void set_vector_store_from_dataset(VectorStore *store, Dataset *dataset) {
   }
 }
 
-VectorStore *create_test_vector_store(int dimensions, int size) {
-  VectorStore *store = new_vector_store(STORE_LINEAR);
-  for (int i = 0; i < size; i++) {
-    Vector *v = new_vector(dimensions);
-    set_random_vector(v);
-    add_vector(store, v);
-  }
-  return store;
-}
-
 int main(void) {
   char *awsdocs = "../datasets/awsdocs.parquet";
   char *querydocs = "../datasets/query.parquet";
@@ -36,7 +26,7 @@ int main(void) {
 
   // Setup Query
   Dataset *query_dataset = load_dataset(querydocs);
-  Record *query_record = &query_dataset->records[1];
+  Record *query_record = &query_dataset->records[0];
   Vector *query = new_vector(query_record->embedding_size);
   set_data_vector(query, query_record->embedding);
   printf("Query: %s\n", query_record->url);

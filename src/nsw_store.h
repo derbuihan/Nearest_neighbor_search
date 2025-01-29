@@ -3,24 +3,25 @@
 
 #include "vector.h"
 
-typedef struct Node Node;
-typedef struct Edge Edge;
+typedef struct NSWNode NSWNode;
+typedef struct NSWEdge NSWEdge;
 
-struct Node {
-  int id;
-  Vector *vector;
-  Edge *edges;
-  int num_edges;
+struct NSWEdge {
+  NSWNode *node;
+  NSWEdge *next;
 };
 
-struct Edge {
-  Node *target;
-  float distance;
+struct NSWNode {
+  int id;
+  Vector *vector;
+  NSWEdge *edges;
+  int num_edges;
+  NSWNode *next;
 };
 
 typedef struct NSWStore NSWStore;
 struct NSWStore {
-  Node *root;
+  NSWNode *root;
   int num_vectors;
 };
 
