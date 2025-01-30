@@ -5,35 +5,6 @@
 
 #include "priority_queue.h"
 
-/*
-typedef struct NSWNode NSWNode;
-typedef struct NSWEdge NSWEdge;
-
-struct NSWEdge {
-  int id;
-  NSWNode *node;
-  NSWEdge *next;
-};
-
-struct NSWNode {
-  int id;
-  Vector *vector;
-  NSWEdge *edges;
-  int num_edges;
-  int max_degree;
-  NSWNode *next;
-};
-
-typedef struct NSWStore NSWStore;
-struct NSWStore {
-  NSWNode *root;
-  int num_vectors;
-  int max_degree;
-  int ef_construction;
-  int ef_search;
-};
-*/
-
 NSWStore *new_nsw_store(int max_degree, int ef_construction, int ef_search) {
   NSWStore *store = malloc(sizeof(NSWStore));
   store->root = NULL;
@@ -125,6 +96,7 @@ void add_vector_nsw_store(NSWStore *store, Vector *v) {
     push_priority_queue(closest, current_id, current_priority);
     visited[current_id] = 1;
 
+    printf("%d, ", current_id);
     NSWNode *current_node = get_nsw_node(store, current_id);
     for (NSWEdge *edge = current_node->edges; edge; edge = edge->next) {
       NSWNode *neighbor = edge->node;
@@ -134,6 +106,7 @@ void add_vector_nsw_store(NSWStore *store, Vector *v) {
       push_priority_queue(candidates, neighbor_id, neighbor_priority);
     }
   }
+  printf("\n");
 
   // Add edges to the graph
   while (closest->size > 0 && root->num_edges < root->max_degree) {

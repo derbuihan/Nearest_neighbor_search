@@ -2,7 +2,7 @@
 #define VECTOR_STORE_H
 
 #include "linear_store.h"
-#include "vector.h"
+#include "nsw_store.h"
 
 typedef enum {
   STORE_LINEAR,
@@ -16,6 +16,7 @@ struct VectorStore {
 
   union {
     LinearStore *linear_store;
+    NSWStore *nsw_store;
   };
 };
 

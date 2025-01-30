@@ -3,10 +3,10 @@
 
 #include "vector_store.h"
 
-void test_store_linear() {
-  VectorStore *store = new_vector_store(STORE_LINEAR);
+void test_vector_store(StoreType store_type) {
+  VectorStore *store = new_vector_store(store_type);
   assert(store != NULL);
-  assert(store->type == STORE_LINEAR);
+  assert(store->type == store_type);
 
   Vector *vec1 = new_vector(3);
   set_data_vector(vec1, (float[]){1.0, 0.0, 0.0});
@@ -39,7 +39,8 @@ void test_store_linear() {
 }
 
 int main() {
-  test_store_linear();
+  test_vector_store(STORE_LINEAR);
+  test_vector_store(STORE_NSW);
 
   printf("All vector store tests passed!\n");
 }

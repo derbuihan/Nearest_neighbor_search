@@ -2,8 +2,6 @@
 
 #include <stdlib.h>
 
-#include "linear_store.h"
-
 VectorStore *new_vector_store(StoreType type) {
   VectorStore *store = malloc(sizeof(VectorStore));
   store->type = type;
@@ -13,7 +11,7 @@ VectorStore *new_vector_store(StoreType type) {
       store->linear_store = new_linear_store();
       break;
     case STORE_NSW:
-      // store->nsw_store = new_nsw_store();
+      store->nsw_store = new_nsw_store(16, 40, 40);
       break;
     default:
       free(store);
@@ -29,7 +27,7 @@ void free_vector_store(VectorStore *store) {
       free_linear_store(store->linear_store);
       break;
     case STORE_NSW:
-      // free_nsw_store(store->nsw_store);
+      free_nsw_store(store->nsw_store);
       break;
     default:
       break;
@@ -44,7 +42,8 @@ void add_vector(VectorStore *store, Vector *v) {
       store->num_vectors++;
       break;
     case STORE_NSW:
-      // add_vector_nsw_store(store->nsw_store, v);
+      add_vector_nsw_store(store->nsw_store, v);
+      store->num_vectors++;
       break;
     default:
       break;
@@ -58,8 +57,8 @@ void search_vectors(VectorStore *store, Vector *query, int top_k,
                                   result_dists);
       break;
     case STORE_NSW:
-      // search_vectors_nsw_store(store->nsw_store, query, top_k, result_ids,
-      //                          result_dists);
+      search_vectors_nsw_store(store->nsw_store, query, top_k, result_ids,
+                               result_dists);
       break;
     default:
       break;
