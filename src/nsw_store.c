@@ -147,10 +147,55 @@ void add_vector_nsw_store(NSWStore *store, Vector *v) {
       connect_nsw_nodes(neighbor, root);
     }
   }
+
+  // Free memory
+  free_priority_queue(candidates);
+  free_priority_queue(closest);
 }
 
 void search_vectors_nsw_store(NSWStore *store, Vector *query, int top_k,
-                              int *result_ids, float *result_dists);
+                              int *result_ids, float *result_dists) {
+  // Add root node to priority queue
+  PriorityQueue *candidates = new_priority_queue();
+  NSWNode *root = store->root;
+  push_priority_queue(candidates, root->id,
+                      dot_product_vector(query, root->vector));
+
+  PriorityQueue *closest = new_priority_queue();
+  int visited[store->num_vectors];
+  for (int i = 0; i < store->num_vectors; i++) visited[i] = 0;
+
+  // Search for the nearest neighbors
+  while (candidates->size > 0 && closest->size < store->ef_search) {
+    int current_id;
+    float current_priority;
+    pop_priority_queue(candidates, &current_id, &current_priority);
+    push_priority_queue(closest, current_id, current_priority);
+    visited[current_id] = 1;
+
+    NSWNode *current_node = get_nsw_node(store, current_id);
+    for (NSWEdge *edge = current_node->edges; edge; edge = edge->next) {
+      NSWNode *neighbor = edge->node;
+      int neighbor_id = neighbor->id;
+      float neighbor_priority = dot_product_vector(query, neighbor->vector);
+      if (visited[neighbor_id]) continue;
+      push_priority_queue(candidates, neighbor_id, neighbor_priority);
+    }
+  }
+
+  // Add the closest nodes to the result
+  for (int i = 0; i < top_k; i++) {
+    int id;
+    float dist;
+    pop_priority_queue(closest, &id, &dist);
+    result_ids[i] = id;
+    result_dists[i] = dist;
+  }
+
+  // Free memory
+  free_priority_queue(candidates);
+  free_priority_queue(closest);
+}
 
 void print_nsw_store(NSWStore *store) {
   for (NSWNode *node = store->root; node; node = node->next) {
