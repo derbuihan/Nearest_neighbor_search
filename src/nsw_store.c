@@ -95,7 +95,6 @@ void add_vector_nsw_store(NSWStore *store, Vector *v) {
     float current_priority;
     pop_priority_queue(candidates, (void **)&current_node, &current_priority);
     push_priority_queue(closest, current_node, current_priority);
-    printf("%d ", current_node->id);
 
     for (NSWEdge *edge = current_node->edges; edge; edge = edge->next) {
       NSWNode *neighbor_node = edge->node;
@@ -105,7 +104,6 @@ void add_vector_nsw_store(NSWStore *store, Vector *v) {
       visited[neighbor_node->id] = 1;
     }
   }
-  printf("\n");
 
   // Add edges to the graph
   while (closest->size > 0 && root->num_edges < root->max_degree) {
@@ -149,12 +147,10 @@ void search_vectors_nsw_store(NSWStore *store, Vector *query, int top_k,
       if (visited[neighbor_node->id]) continue;
       float neighbor_priority =
           dot_product_vector(query, neighbor_node->vector);
-      printf("%lf ", neighbor_priority);
       push_priority_queue(candidates, neighbor_node, neighbor_priority);
       visited[neighbor_node->id] = 1;
     }
   }
-  printf("\n");
 
   // Add the closest nodes to the result
   for (int i = 0; i < top_k; i++) {
