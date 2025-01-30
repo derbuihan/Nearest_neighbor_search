@@ -1,5 +1,6 @@
 #include "nsw_store.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "priority_queue.h"
@@ -150,4 +151,13 @@ void add_vector_nsw_store(NSWStore *store, Vector *v) {
 
 void search_vectors_nsw_store(NSWStore *store, Vector *query, int top_k,
                               int *result_ids, float *result_dists);
-void print_nsw_store(NSWStore *store);
+
+void print_nsw_store(NSWStore *store) {
+  for (NSWNode *node = store->root; node; node = node->next) {
+    printf("Node: %d, Edge:", node->id);
+    for (NSWEdge *edge = node->edges; edge; edge = edge->next) {
+      printf(" %d", edge->node->id);
+    }
+    printf("\n");
+  }
+}
