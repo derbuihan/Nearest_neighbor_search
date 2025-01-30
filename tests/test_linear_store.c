@@ -42,9 +42,9 @@ void test_search_vectors_linear_store() {
   float result_dists[top_k];
 
   search_vectors_linear_store(store, query, top_k, result_ids, result_dists);
-  assert(result_ids[0] == 3);
-  assert(result_ids[1] == 2);
-  assert(result_ids[2] == 1);
+  assert(result_ids[0] == 2);
+  assert(result_ids[1] == 1);
+  assert(result_ids[2] == 0);
 
   assert(result_dists[0] == 2.0);
   assert(result_dists[1] == 1.0);

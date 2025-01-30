@@ -36,7 +36,7 @@ void free_linear_store(LinearStore *store) {
 }
 
 void add_vector_linear_store(LinearStore *store, Vector *v) {
-  Node *node = new_node(++store->num_vectors, v);
+  Node *node = new_node(store->num_vectors++, v);
   node->next = store->head;
   store->head = node;
 }

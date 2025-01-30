@@ -27,9 +27,9 @@ void test_store_linear() {
   int result_ids[3];
   float result_dists[3];
   search_vectors(store, query, 3, result_ids, result_dists);
-  assert(result_ids[0] == 3);
-  assert(result_ids[1] == 2);
-  assert(result_ids[2] == 1);
+  assert(result_ids[0] == 2);
+  assert(result_ids[1] == 1);
+  assert(result_ids[2] == 0);
   assert(result_dists[0] == 2.0);
   assert(result_dists[1] == 1.0);
   assert(result_dists[2] == 0.0);
