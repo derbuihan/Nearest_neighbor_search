@@ -11,7 +11,7 @@ VectorStore *new_vector_store(StoreType type) {
       store->linear_store = new_linear_store();
       break;
     case STORE_NSW:
-      store->nsw_store = new_nsw_store(16, 40, 40);
+      store->nsw_store = new_nsw_store(8, 20, 100);
       break;
     default:
       free(store);

@@ -52,16 +52,15 @@ void search_vectors_linear_store(LinearStore *store, Vector *query, int top_k,
 
   for (Node *node = store->head; node; node = node->next) {
     Vector *vector = node->vector;
-    int id = node->id;
     float dist = dot_product_vector(query, vector);
-    push_priority_queue(queue, id, dist);
+    push_priority_queue(queue, (void *)node, dist);
   }
 
   for (int i = 0; i < top_k; i++) {
-    int id;
+    Node *node;
     float dist;
-    pop_priority_queue(queue, &id, &dist);
-    result_ids[i] = id;
+    pop_priority_queue(queue, (void *)&node, &dist);
+    result_ids[i] = node->id;
     result_dists[i] = dist;
   }
 

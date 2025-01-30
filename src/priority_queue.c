@@ -2,9 +2,9 @@
 
 #include <stdlib.h>
 
-static PgNode *new_pg_node(int id, float priority) {
+static PgNode *new_pg_node(void *value, float priority) {
   PgNode *node = malloc(sizeof(PgNode));
-  node->id = id;
+  node->value = value;
   node->priority = priority;
   node->left = NULL;
   node->right = NULL;
@@ -44,13 +44,13 @@ static void push_node(PgNode **head, PgNode *node) {
   }
 }
 
-void push_priority_queue(PriorityQueue *queue, int id, float priority) {
-  PgNode *node = new_pg_node(id, priority);
+void push_priority_queue(PriorityQueue *queue, void *value, float priority) {
+  PgNode *node = new_pg_node(value, priority);
   push_node(&queue->root, node);
   queue->size++;
 }
 
-void pop_priority_queue(PriorityQueue *queue, int *result_id,
+void pop_priority_queue(PriorityQueue *queue, void **result_value,
                         float *result_priority) {
   // If the queue is empty, return.
   if (queue->root == NULL) {
@@ -65,7 +65,7 @@ void pop_priority_queue(PriorityQueue *queue, int *result_id,
     node = node->right;
   }
 
-  *result_id = node->id;
+  *result_value = node->value;
   *result_priority = node->priority;
 
   // Remove the maximum priority node.

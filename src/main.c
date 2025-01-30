@@ -21,7 +21,8 @@ int main(void) {
 
   // Setup VectorStore
   Dataset *dataset = load_dataset(awsdocs);
-  VectorStore *store = new_vector_store(STORE_LINEAR);
+  dataset->num_records = 3000;
+  VectorStore *store = new_vector_store(STORE_NSW);
   set_vector_store_from_dataset(store, dataset);
 
   // Setup Query

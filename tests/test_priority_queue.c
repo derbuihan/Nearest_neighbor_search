@@ -12,10 +12,10 @@ void test_new_priority_queue() {
 
 void test_push_priority_queue() {
   PriorityQueue *queue = new_priority_queue();
-
-  push_priority_queue(queue, 1, 3.0f);
-  push_priority_queue(queue, 2, 1.0f);
-  push_priority_queue(queue, 3, 2.0f);
+  int x = 1, y = 2, z = 3;
+  push_priority_queue(queue, &x, 3.0f);
+  push_priority_queue(queue, &y, 1.0f);
+  push_priority_queue(queue, &z, 2.0f);
 
   assert(queue->size == 3);
   free_priority_queue(queue);
@@ -24,22 +24,23 @@ void test_push_priority_queue() {
 void test_pop_priority_queue() {
   PriorityQueue *queue = new_priority_queue();
 
-  push_priority_queue(queue, 1, 3.0f);
-  push_priority_queue(queue, 2, 1.0f);
-  push_priority_queue(queue, 3, 2.0f);
+  int x = 1, y = 2, z = 3;
+  push_priority_queue(queue, &x, 3.0f);
+  push_priority_queue(queue, &y, 1.0f);
+  push_priority_queue(queue, &z, 2.0f);
 
-  int id;
+  int *id;
   float priority;
-  pop_priority_queue(queue, &id, &priority);
-  assert(id == 1);
+  pop_priority_queue(queue, (void **)&id, &priority);
+  assert(*id == 1);
   assert(priority == 3.0f);
 
-  pop_priority_queue(queue, &id, &priority);
-  assert(id == 3);
+  pop_priority_queue(queue, (void **)&id, &priority);
+  assert(*id == 3);
   assert(priority == 2.0f);
 
-  pop_priority_queue(queue, &id, &priority);
-  assert(id == 2);
+  pop_priority_queue(queue, (void **)&id, &priority);
+  assert(*id == 2);
   assert(priority == 1.0f);
 
   free_priority_queue(queue);

@@ -81,43 +81,41 @@ void add_vector_nsw_store(NSWStore *store, Vector *v) {
   // Add root node to priority queue
   PriorityQueue *candidates = new_priority_queue();
   NSWNode *node = store->root->next;
-  push_priority_queue(candidates, node->id,
+  push_priority_queue(candidates, (void *)node,
                       dot_product_vector(v, node->vector));
 
   PriorityQueue *closest = new_priority_queue();
   int visited[store->num_vectors];
   for (int i = 0; i < store->num_vectors; i++) visited[i] = 0;
+  visited[node->id] = 1;
 
   // Search for the nearest neighbors
-  while (candidates->size > 0 && closest->size < store->max_degree) {
-    int current_id;
+  while (candidates->size > 0 && closest->size < store->ef_construction) {
+    NSWNode *current_node;
     float current_priority;
-    pop_priority_queue(candidates, &current_id, &current_priority);
-    push_priority_queue(closest, current_id, current_priority);
-    visited[current_id] = 1;
+    pop_priority_queue(candidates, (void **)&current_node, &current_priority);
+    push_priority_queue(closest, current_node, current_priority);
+    printf("%d ", current_node->id);
 
-    printf("%d, ", current_id);
-    NSWNode *current_node = get_nsw_node(store, current_id);
     for (NSWEdge *edge = current_node->edges; edge; edge = edge->next) {
-      NSWNode *neighbor = edge->node;
-      int neighbor_id = neighbor->id;
-      float neighbor_priority = dot_product_vector(v, neighbor->vector);
-      if (visited[neighbor_id]) continue;
-      push_priority_queue(candidates, neighbor_id, neighbor_priority);
+      NSWNode *neighbor_node = edge->node;
+      if (visited[neighbor_node->id]) continue;
+      float neighbor_priority = dot_product_vector(v, neighbor_node->vector);
+      push_priority_queue(candidates, neighbor_node, neighbor_priority);
+      visited[neighbor_node->id] = 1;
     }
   }
   printf("\n");
 
   // Add edges to the graph
   while (closest->size > 0 && root->num_edges < root->max_degree) {
-    int id;
+    NSWNode *node;
     float priority;
-    pop_priority_queue(closest, &id, &priority);
-    NSWNode *neighbor = get_nsw_node(store, id);
+    pop_priority_queue(closest, (void **)&node, &priority);
 
-    connect_nsw_nodes(root, neighbor);
-    if (neighbor->num_edges < neighbor->max_degree) {
-      connect_nsw_nodes(neighbor, root);
+    connect_nsw_nodes(root, node);
+    if (node->num_edges < node->max_degree) {
+      connect_nsw_nodes(node, root);
     }
   }
 
@@ -131,37 +129,39 @@ void search_vectors_nsw_store(NSWStore *store, Vector *query, int top_k,
   // Add root node to priority queue
   PriorityQueue *candidates = new_priority_queue();
   NSWNode *root = store->root;
-  push_priority_queue(candidates, root->id,
+  push_priority_queue(candidates, (void *)root,
                       dot_product_vector(query, root->vector));
 
   PriorityQueue *closest = new_priority_queue();
   int visited[store->num_vectors];
   for (int i = 0; i < store->num_vectors; i++) visited[i] = 0;
+  visited[root->id] = 1;
 
   // Search for the nearest neighbors
   while (candidates->size > 0 && closest->size < store->ef_search) {
-    int current_id;
+    NSWNode *current_node;
     float current_priority;
-    pop_priority_queue(candidates, &current_id, &current_priority);
-    push_priority_queue(closest, current_id, current_priority);
-    visited[current_id] = 1;
+    pop_priority_queue(candidates, (void **)&current_node, &current_priority);
+    push_priority_queue(closest, current_node, current_priority);
 
-    NSWNode *current_node = get_nsw_node(store, current_id);
     for (NSWEdge *edge = current_node->edges; edge; edge = edge->next) {
-      NSWNode *neighbor = edge->node;
-      int neighbor_id = neighbor->id;
-      float neighbor_priority = dot_product_vector(query, neighbor->vector);
-      if (visited[neighbor_id]) continue;
-      push_priority_queue(candidates, neighbor_id, neighbor_priority);
+      NSWNode *neighbor_node = edge->node;
+      if (visited[neighbor_node->id]) continue;
+      float neighbor_priority =
+          dot_product_vector(query, neighbor_node->vector);
+      printf("%lf ", neighbor_priority);
+      push_priority_queue(candidates, neighbor_node, neighbor_priority);
+      visited[neighbor_node->id] = 1;
     }
   }
+  printf("\n");
 
   // Add the closest nodes to the result
   for (int i = 0; i < top_k; i++) {
-    int id;
+    NSWNode *node;
     float dist;
-    pop_priority_queue(closest, &id, &dist);
-    result_ids[i] = id;
+    pop_priority_queue(closest, (void **)&node, &dist);
+    result_ids[i] = node->id;
     result_dists[i] = dist;
   }
 
