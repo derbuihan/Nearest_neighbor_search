@@ -1,5 +1,6 @@
 #ifndef VECTOR_H
 #define VECTOR_H
+#include <stdio.h>
 
 typedef struct Vector Vector;
 
@@ -15,5 +16,7 @@ float length_vector(Vector *v);
 void set_data_vector(Vector *v, float *data);
 void set_random_vector(Vector *v);
 void print_vector(Vector *v);
+void save_vector(Vector *v, FILE *fp);
+Vector *load_vector(FILE *fp);
 
 #endif  // VECTOR_H

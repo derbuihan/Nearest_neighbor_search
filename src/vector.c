@@ -61,3 +61,16 @@ void print_vector(Vector *v) {
   }
   printf("\n");
 }
+
+void save_vector(Vector *v, FILE *fp) {
+  fwrite(&v->size, sizeof(int), 1, fp);
+  fwrite(v->data, sizeof(float), v->size, fp);
+}
+
+Vector *load_vector(FILE *fp) {
+  Vector *v = malloc(sizeof(Vector));
+  fread(&v->size, sizeof(int), 1, fp);
+  v->data = malloc(v->size * sizeof(float));
+  fread(v->data, sizeof(float), v->size, fp);
+  return v;
+}

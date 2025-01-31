@@ -64,11 +64,34 @@ void test_set_random_vector() {
   free_vector(vec2);
 }
 
+void test_save_load_vector() {
+  Vector *vec = new_vector(3);
+  set_data_vector(vec, (float[]){1.0, 2.0, 3.0});
+
+  FILE *fp = fopen("test_vector.bin", "wb");
+  save_vector(vec, fp);
+  fclose(fp);
+
+  fp = fopen("test_vector.bin", "rb");
+  Vector *loaded_vec = load_vector(fp);
+  fclose(fp);
+
+  assert(loaded_vec->size == vec->size);
+  for (int i = 0; i < vec->size; i++) {
+    assert(loaded_vec->data[i] == vec->data[i]);
+  }
+
+  free_vector(vec);
+  free_vector(loaded_vec);
+  remove("test_vector.bin");
+}
+
 int main() {
   test_new_vector();
   test_dot_product_vector();
   test_length_vector();
   test_set_random_vector();
+  test_save_load_vector();
   printf("All vector tests passed!\n");
   return 0;
 }

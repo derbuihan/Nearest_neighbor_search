@@ -73,3 +73,33 @@ void print_linear_store(LinearStore *store) {
     print_vector(node->vector);
   }
 }
+
+void save_linear_store(LinearStore *store, FILE *fp) {
+  fwrite(&store->num_vectors, sizeof(int), 1, fp);
+  for (Node *node = store->head; node; node = node->next) {
+    fwrite(&node->id, sizeof(int), 1, fp);
+    save_vector(node->vector, fp);
+  }
+}
+
+LinearStore *load_linear_store(FILE *fp) {
+  LinearStore *store = new_linear_store();
+  fread(&store->num_vectors, sizeof(int), 1, fp);
+
+  Node *prev = NULL;
+  for (int i = 0; i < store->num_vectors; i++) {
+    Node *node = malloc(sizeof(Node));
+    fread(&node->id, sizeof(int), 1, fp);
+    node->vector = load_vector(fp);
+    node->next = NULL;
+
+    if (prev == NULL) {
+      store->head = node;
+    } else {
+      prev->next = node;
+    }
+    prev = node;
+  }
+
+  return store;
+}
