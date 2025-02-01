@@ -1,5 +1,6 @@
 #include "nsw_store.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
