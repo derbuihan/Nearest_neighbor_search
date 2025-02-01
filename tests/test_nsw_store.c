@@ -78,6 +78,39 @@ void test_search_vectors_nsw_store() {
   free_nsw_store(store);
 }
 
+void test_is_equal_nsw_store() {
+  NSWStore *store1 = new_nsw_store(16, 40, 40);
+  Vector *vec11 = new_vector(3);
+  set_data_vector(vec11, (float[]){1.0, 0.0, 0.0});
+  add_vector_nsw_store(store1, vec11);
+
+  Vector *vec12 = new_vector(3);
+  set_data_vector(vec12, (float[]){0.0, 1.0, 0.0});
+  add_vector_nsw_store(store1, vec12);
+
+  Vector *vec13 = new_vector(3);
+  set_data_vector(vec13, (float[]){0.0, 0.0, 1.0});
+  add_vector_nsw_store(store1, vec13);
+
+  NSWStore *store2 = new_nsw_store(16, 40, 40);
+  Vector *vec21 = new_vector(3);
+  set_data_vector(vec21, (float[]){1.0, 0.0, 0.0});
+  add_vector_nsw_store(store2, vec21);
+
+  Vector *vec22 = new_vector(3);
+  set_data_vector(vec22, (float[]){0.0, 1.0, 0.0});
+  add_vector_nsw_store(store2, vec22);
+
+  Vector *vec23 = new_vector(3);
+  set_data_vector(vec23, (float[]){0.0, 0.0, 1.0});
+  add_vector_nsw_store(store2, vec23);
+
+  assert(is_equal_nsw_store(store1, store2));
+
+  free_nsw_store(store1);
+  free_nsw_store(store2);
+}
+
 void test_save_load_linear_store() {
   NSWStore *store = new_nsw_store(16, 40, 40);
   Vector *vec1 = new_vector(3);
@@ -100,28 +133,7 @@ void test_save_load_linear_store() {
   NSWStore *loaded_store = load_nsw_store(fp);
   fclose(fp);
 
-  // Check if the loaded store is the same as the original store
-  assert(loaded_store->max_degree == store->max_degree);
-  assert(loaded_store->ef_construction == store->ef_construction);
-  assert(loaded_store->ef_search == store->ef_search);
-  assert(loaded_store->num_vectors == store->num_vectors);
-  for (NSWNode *node = store->root, *loaded_node = loaded_store->root;
-       node || loaded_node;
-       node = node->next, loaded_node = loaded_node->next) {
-    assert(loaded_node->id == node->id);
-    assert(loaded_node->max_degree == node->max_degree);
-    assert(loaded_node->num_edges == node->num_edges);
-    assert(loaded_node->vector->size == node->vector->size);
-    for (int i = 0; i < node->vector->size; i++) {
-      assert(loaded_node->vector->data[i] == node->vector->data[i]);
-    }
-    for (NSWEdge *edge = node->edges, *loaded_edge = loaded_node->edges;
-         edge || loaded_edge;
-         edge = edge->next, loaded_edge = loaded_edge->next) {
-      assert(loaded_edge->id == edge->id);
-      assert(loaded_edge->node->id == edge->node->id);
-    }
-  }
+  assert(is_equal_nsw_store(store, loaded_store));
 
   free_nsw_store(store);
   free_nsw_store(loaded_store);
@@ -132,6 +144,7 @@ int main() {
   test_new_nsw_store();
   test_add_vector_nsw_store();
   test_search_vectors_nsw_store();
+  test_is_equal_nsw_store();
   test_save_load_linear_store();
 
   printf("All linear store tests passed!\n");

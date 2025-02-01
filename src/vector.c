@@ -55,6 +55,14 @@ void set_random_vector(Vector *v) {
   }
 }
 
+bool is_equal_vector(Vector *v1, Vector *v2) {
+  if (v1->size != v2->size) return false;
+  for (int i = 0; i < v1->size; i++) {
+    if (v1->data[i] != v2->data[i]) return false;
+  }
+  return true;
+}
+
 void print_vector(Vector *v) {
   for (int i = 0; i < v->size; i++) {
     printf("%f ", v->data[i]);

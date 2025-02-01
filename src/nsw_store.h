@@ -1,6 +1,8 @@
 #ifndef NSW_STORE_H
 #define NSW_STORE_H
 
+#include <stdbool.h>
+
 #include "vector.h"
 
 typedef struct NSWNode NSWNode;
@@ -35,6 +37,7 @@ void free_nsw_store(NSWStore *store);
 void add_vector_nsw_store(NSWStore *store, Vector *v);
 void search_vectors_nsw_store(NSWStore *store, Vector *query, int top_k,
                               int *result_ids, float *result_dists);
+bool is_equal_nsw_store(NSWStore *store1, NSWStore *store2);
 void print_nsw_store(NSWStore *store);
 void save_nsw_store(NSWStore *store, FILE *fp);
 NSWStore *load_nsw_store(FILE *fp);

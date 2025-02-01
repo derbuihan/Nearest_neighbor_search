@@ -54,6 +54,39 @@ void test_search_vectors_linear_store() {
   free_linear_store(store);
 }
 
+void test_is_equal_linear_store() {
+  LinearStore *store1 = new_linear_store();
+  Vector *vec11 = new_vector(3);
+  set_data_vector(vec11, (float[]){1.0, 0.0, 0.0});
+  add_vector_linear_store(store1, vec11);
+
+  Vector *vec12 = new_vector(3);
+  set_data_vector(vec12, (float[]){0.0, 1.0, 0.0});
+  add_vector_linear_store(store1, vec12);
+
+  Vector *vec13 = new_vector(3);
+  set_data_vector(vec13, (float[]){0.0, 0.0, 1.0});
+  add_vector_linear_store(store1, vec13);
+
+  LinearStore *store2 = new_linear_store();
+  Vector *vec21 = new_vector(3);
+  set_data_vector(vec21, (float[]){1.0, 0.0, 0.0});
+  add_vector_linear_store(store2, vec21);
+
+  Vector *vec22 = new_vector(3);
+  set_data_vector(vec22, (float[]){0.0, 1.0, 0.0});
+  add_vector_linear_store(store2, vec22);
+
+  Vector *vec23 = new_vector(3);
+  set_data_vector(vec23, (float[]){0.0, 0.0, 1.0});
+  add_vector_linear_store(store2, vec23);
+
+  assert(is_equal_linear_store(store1, store2));
+
+  free_linear_store(store1);
+  free_linear_store(store2);
+}
+
 void test_save_load_linear_store() {
   LinearStore *store = new_linear_store();
   Vector *vec1 = new_vector(3);
@@ -76,16 +109,7 @@ void test_save_load_linear_store() {
   LinearStore *loaded_store = load_linear_store(fp);
   fclose(fp);
 
-  // Check if the loaded store is the same as the original store
-  assert(loaded_store->num_vectors == store->num_vectors);
-  for (Node *node = store->head, *loaded_node = loaded_store->head;
-       node || loaded_node;
-       node = node->next, loaded_node = loaded_node->next) {
-    assert(loaded_node->id == node->id);
-    for (int i = 0; i < node->vector->size; i++) {
-      assert(loaded_node->vector->data[i] == node->vector->data[i]);
-    }
-  }
+  assert(is_equal_linear_store(store, loaded_store));
 
   free_linear_store(store);
   free_linear_store(loaded_store);
@@ -96,6 +120,7 @@ int main() {
   test_new_linear_store();
   test_add_vector_linear_store();
   test_search_vectors_linear_store();
+  test_is_equal_linear_store();
   test_save_load_linear_store();
 
   printf("All linear store tests passed!\n");

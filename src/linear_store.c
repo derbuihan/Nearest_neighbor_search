@@ -67,6 +67,16 @@ void search_vectors_linear_store(LinearStore *store, Vector *query, int top_k,
   free_priority_queue(queue);
 }
 
+bool is_equal_linear_store(LinearStore *store1, LinearStore *store2) {
+  if (store1->num_vectors != store2->num_vectors) return false;
+  for (Node *node1 = store1->head, *node2 = store2->head; node1 || node2;
+       node1 = node1->next, node2 = node2->next) {
+    if (node1->id != node2->id) return false;
+    if (!is_equal_vector(node1->vector, node2->vector)) return false;
+  }
+  return true;
+}
+
 void print_linear_store(LinearStore *store) {
   for (Node *node = store->head; node; node = node->next) {
     printf("Vector %d: ", node->id);

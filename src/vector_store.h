@@ -1,6 +1,8 @@
 #ifndef VECTOR_STORE_H
 #define VECTOR_STORE_H
 
+#include <stdbool.h>
+
 #include "linear_store.h"
 #include "nsw_store.h"
 
@@ -25,5 +27,8 @@ void free_vector_store(VectorStore *store);
 void add_vector(VectorStore *store, Vector *v);
 void search_vectors(VectorStore *store, Vector *query, int top_k,
                     int *result_ids, float *result_dists);
+bool is_equal_vector_store(VectorStore *store1, VectorStore *store2);
+void save_vector_store(VectorStore *store, FILE *fp);
+VectorStore *load_vector_store(FILE *fp);
 
 #endif  // VECTOR_STORE_H

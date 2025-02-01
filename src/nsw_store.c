@@ -167,6 +167,28 @@ void search_vectors_nsw_store(NSWStore *store, Vector *query, int top_k,
   free_priority_queue(closest);
 }
 
+bool is_equal_nsw_store(NSWStore *store1, NSWStore *store2) {
+  if (store1->max_degree != store2->max_degree) return false;
+  if (store1->ef_construction != store2->ef_construction) return false;
+  if (store1->ef_search != store2->ef_search) return false;
+  if (store1->num_vectors != store2->num_vectors) return false;
+
+  for (NSWNode *node1 = store1->root, *node2 = store2->root; node1 || node2;
+       node1 = node1->next, node2 = node2->next) {
+    if (node1->id != node2->id) return false;
+    if (node1->max_degree != node2->max_degree) return false;
+    if (node1->num_edges != node2->num_edges) return false;
+    if (!is_equal_vector(node1->vector, node2->vector)) return false;
+
+    for (NSWEdge *edge1 = node1->edges, *edge2 = node2->edges; edge1 || edge2;
+         edge1 = edge1->next, edge2 = edge2->next) {
+      if (edge1->id != edge2->id) return false;
+      if (edge1->node->id != edge2->node->id) return false;
+    }
+  }
+  return true;
+}
+
 void print_nsw_store(NSWStore *store) {
   for (NSWNode *node = store->root; node; node = node->next) {
     printf("Node: %d, Edge:", node->id);

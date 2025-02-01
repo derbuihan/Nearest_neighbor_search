@@ -64,3 +64,56 @@ void search_vectors(VectorStore *store, Vector *query, int top_k,
       break;
   }
 }
+
+bool is_equal_vector_store(VectorStore *store1, VectorStore *store2) {
+  if (store1->type != store2->type) return false;
+  if (store1->num_vectors != store2->num_vectors) return false;
+
+  switch (store1->type) {
+    case STORE_LINEAR:
+      if (!is_equal_linear_store(store1->linear_store, store2->linear_store))
+        return false;
+      break;
+    case STORE_NSW:
+      if (!is_equal_nsw_store(store1->nsw_store, store2->nsw_store))
+        return false;
+      break;
+    default:
+      break;
+  }
+
+  return true;
+}
+
+void save_vector_store(VectorStore *store, FILE *fp) {
+  fwrite(&store->type, sizeof(StoreType), 1, fp);
+  fwrite(&store->num_vectors, sizeof(int), 1, fp);
+  switch (store->type) {
+    case STORE_LINEAR:
+      save_linear_store(store->linear_store, fp);
+      break;
+    case STORE_NSW:
+      save_nsw_store(store->nsw_store, fp);
+      break;
+    default:
+      break;
+  }
+}
+
+VectorStore *load_vector_store(FILE *fp) {
+  VectorStore *store = malloc(sizeof(VectorStore));
+  fread(&store->type, sizeof(StoreType), 1, fp);
+  fread(&store->num_vectors, sizeof(int), 1, fp);
+  switch (store->type) {
+    case STORE_LINEAR:
+      store->linear_store = load_linear_store(fp);
+      break;
+    case STORE_NSW:
+      store->nsw_store = load_nsw_store(fp);
+      break;
+    default:
+      free(store);
+      return NULL;
+  }
+  return store;
+}

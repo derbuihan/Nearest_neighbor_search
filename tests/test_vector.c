@@ -64,6 +64,18 @@ void test_set_random_vector() {
   free_vector(vec2);
 }
 
+void test_is_equal_vector() {
+  Vector *vec1 = new_vector(3);
+  set_data_vector(vec1, (float[]){1.0, 2.0, 3.0});
+  Vector *vec2 = new_vector(3);
+  set_data_vector(vec2, (float[]){1.0, 2.0, 3.0});
+
+  assert(is_equal_vector(vec1, vec2));
+
+  free_vector(vec1);
+  free_vector(vec2);
+}
+
 void test_save_load_vector() {
   Vector *vec = new_vector(3);
   set_data_vector(vec, (float[]){1.0, 2.0, 3.0});
@@ -76,10 +88,7 @@ void test_save_load_vector() {
   Vector *loaded_vec = load_vector(fp);
   fclose(fp);
 
-  assert(loaded_vec->size == vec->size);
-  for (int i = 0; i < vec->size; i++) {
-    assert(loaded_vec->data[i] == vec->data[i]);
-  }
+  assert(is_equal_vector(vec, loaded_vec));
 
   free_vector(vec);
   free_vector(loaded_vec);
@@ -91,6 +100,7 @@ int main() {
   test_dot_product_vector();
   test_length_vector();
   test_set_random_vector();
+  test_is_equal_vector();
   test_save_load_vector();
   printf("All vector tests passed!\n");
   return 0;
