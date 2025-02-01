@@ -20,41 +20,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Apache Arrow
-      run: |
-        sudo apt update
-        sudo apt install -y -V ca-certificates lsb-release wget
-        wget https://apache.jfrog.io/artifactory/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb
-        sudo apt install -y -V ./apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb
-        sudo apt update
-        sudo apt install -y -V libarrow-dev # For C++
-        sudo apt install -y -V libarrow-glib-dev # For GLib (C)
-        sudo apt install -y -V libarrow-dataset-dev # For Apache Arrow Dataset C++
-        sudo apt install -y -V libarrow-dataset-glib-dev # For Apache Arrow Dataset GLib (C)
-        sudo apt install -y -V libarrow-acero-dev # For Apache Arrow Acero
-        sudo apt install -y -V libarrow-flight-dev # For Apache Arrow Flight C++
-        sudo apt install -y -V libarrow-flight-glib-dev # For Apache Arrow Flight GLib (C)
-        sudo apt install -y -V libarrow-flight-sql-dev # For Apache Arrow Flight SQL C++
-        sudo apt install -y -V libarrow-flight-sql-glib-dev # For Apache Arrow Flight SQL GLib (C)
-        sudo apt install -y -V libgandiva-dev # For Gandiva C++
-        sudo apt install -y -V libgandiva-glib-dev # For Gandiva GLib (C)
-        sudo apt install -y -V libparquet-dev # For Apache Parquet C++
-        sudo apt install -y -V libparquet-glib-dev # For Apache Parquet GLib (C)
+      - name: Install Apache Arrow
+        run: |
+          sudo apt update
+          sudo apt install -y -V ca-certificates lsb-release wget
+          wget https://apache.jfrog.io/artifactory/arrow/$(lsb_release --id --short | tr 'A-Z' 'a-z')/apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb
+          sudo apt install -y -V ./apache-arrow-apt-source-latest-$(lsb_release --codename --short).deb
+          sudo apt update
+          sudo apt install -y -V libarrow-dev # For C++
+          sudo apt install -y -V libarrow-glib-dev # For GLib (C)
+          sudo apt install -y -V libarrow-dataset-dev # For Apache Arrow Dataset C++
+          sudo apt install -y -V libarrow-dataset-glib-dev # For Apache Arrow Dataset GLib (C)
+          sudo apt install -y -V libarrow-acero-dev # For Apache Arrow Acero
+          sudo apt install -y -V libarrow-flight-dev # For Apache Arrow Flight C++
+          sudo apt install -y -V libarrow-flight-glib-dev # For Apache Arrow Flight GLib (C)
+          sudo apt install -y -V libarrow-flight-sql-dev # For Apache Arrow Flight SQL C++
+          sudo apt install -y -V libarrow-flight-sql-glib-dev # For Apache Arrow Flight SQL GLib (C)
+          sudo apt install -y -V libgandiva-dev # For Gandiva C++
+          sudo apt install -y -V libgandiva-glib-dev # For Gandiva GLib (C)
+          sudo apt install -y -V libparquet-dev # For Apache Parquet C++
+          sudo apt install -y -V libparquet-glib-dev # For Apache Parquet GLib (C)
 
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
-    - name: Build
-      # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      - name: Build
+        # Build your program with the given configuration
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
-
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -C ${{env.BUILD_TYPE}} --verbose
