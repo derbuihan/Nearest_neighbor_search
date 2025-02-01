@@ -175,3 +175,92 @@ void print_nsw_store(NSWStore *store) {
     printf("\n");
   }
 }
+
+static void save_nsw_edge(NSWEdge *edge, FILE *fp) {
+  fwrite(&edge->id, sizeof(int), 1, fp);
+  fwrite(&edge->node->id, sizeof(int), 1, fp);
+}
+
+static void save_nsw_node(NSWNode *node, FILE *fp) {
+  fwrite(&node->id, sizeof(int), 1, fp);
+  save_vector(node->vector, fp);
+  fwrite(&node->max_degree, sizeof(int), 1, fp);
+  fwrite(&node->num_edges, sizeof(int), 1, fp);
+
+  for (NSWEdge *edge = node->edges; edge; edge = edge->next) {
+    save_nsw_edge(edge, fp);
+  }
+}
+
+void save_nsw_store(NSWStore *store, FILE *fp) {
+  fwrite(&store->max_degree, sizeof(int), 1, fp);
+  fwrite(&store->ef_construction, sizeof(int), 1, fp);
+  fwrite(&store->ef_search, sizeof(int), 1, fp);
+  fwrite(&store->num_vectors, sizeof(int), 1, fp);
+
+  for (NSWNode *node = store->root; node; node = node->next) {
+    save_nsw_node(node, fp);
+  }
+}
+
+static NSWEdge *load_nsw_edge(FILE *fp) {
+  NSWEdge *edge = malloc(sizeof(NSWEdge));
+  fread(&edge->id, sizeof(int), 1, fp);
+  int node_id;
+  fread(&node_id, sizeof(int), 1, fp);
+  edge->node = (NSWNode *)(intptr_t)node_id;
+  edge->next = NULL;
+  return edge;
+}
+
+static NSWNode *load_nsw_node(FILE *fp) {
+  NSWNode *node = malloc(sizeof(NSWNode));
+  fread(&node->id, sizeof(int), 1, fp);
+  node->vector = load_vector(fp);
+  fread(&node->max_degree, sizeof(int), 1, fp);
+  fread(&node->num_edges, sizeof(int), 1, fp);
+
+  NSWEdge *prev = NULL;
+  for (int i = 0; i < node->num_edges; i++) {
+    NSWEdge *edge = load_nsw_edge(fp);
+    if (prev == NULL) {
+      node->edges = edge;
+    } else {
+      prev->next = edge;
+    }
+    prev = edge;
+  }
+
+  return node;
+}
+
+NSWStore *load_nsw_store(FILE *fp) {
+  NSWStore *store = malloc(sizeof(NSWStore));
+  fread(&store->max_degree, sizeof(int), 1, fp);
+  fread(&store->ef_construction, sizeof(int), 1, fp);
+  fread(&store->ef_search, sizeof(int), 1, fp);
+  fread(&store->num_vectors, sizeof(int), 1, fp);
+
+  NSWNode *node_ptrs[store->num_vectors];
+  NSWNode *prev = NULL;
+  for (int i = 0; i < store->num_vectors; i++) {
+    NSWNode *node = load_nsw_node(fp);
+
+    if (prev == NULL) {
+      store->root = node;
+    } else {
+      prev->next = node;
+    }
+    prev = node;
+
+    node_ptrs[node->id] = node;
+  }
+
+  for (NSWNode *node = store->root; node; node = node->next) {
+    for (NSWEdge *edge = node->edges; edge; edge = edge->next) {
+      edge->node = node_ptrs[(intptr_t)edge->node];
+    }
+  }
+
+  return store;
+}

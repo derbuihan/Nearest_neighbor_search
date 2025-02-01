@@ -11,8 +11,8 @@ struct PgNode {
 
 typedef struct PriorityQueue PriorityQueue;
 struct PriorityQueue {
-  PgNode *root;
   int size;
+  PgNode *root;
 };
 
 PriorityQueue *new_priority_queue();

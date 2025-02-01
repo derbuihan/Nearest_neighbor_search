@@ -9,14 +9,14 @@ typedef struct Record Record;
 struct Record {
   char *url;
   char *content;
-  float *embedding;
   int embedding_size;
+  float *embedding;
 };
 
 typedef struct Dataset Dataset;
 struct Dataset {
-  Record *records;
   int num_records;
+  Record *records;
 };
 
 Dataset *load_dataset(char *filename);

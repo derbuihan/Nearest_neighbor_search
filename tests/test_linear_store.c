@@ -76,16 +76,15 @@ void test_save_load_linear_store() {
   LinearStore *loaded_store = load_linear_store(fp);
   fclose(fp);
 
+  // Check if the loaded store is the same as the original store
   assert(loaded_store->num_vectors == store->num_vectors);
-  assert(loaded_store->head->id == store->head->id);
-  assert(loaded_store->head->next->id == store->head->next->id);
-  assert(loaded_store->head->next->next->id == store->head->next->next->id);
-  for (int i = 0; i < 3; i++) {
-    assert(loaded_store->head->vector->data[i] == store->head->vector->data[i]);
-    assert(loaded_store->head->next->vector->data[i] ==
-           store->head->next->vector->data[i]);
-    assert(loaded_store->head->next->next->vector->data[i] ==
-           store->head->next->next->vector->data[i]);
+  for (Node *node = store->head, *loaded_node = loaded_store->head;
+       node || loaded_node;
+       node = node->next, loaded_node = loaded_node->next) {
+    assert(loaded_node->id == node->id);
+    for (int i = 0; i < node->vector->size; i++) {
+      assert(loaded_node->vector->data[i] == node->vector->data[i]);
+    }
   }
 
   free_linear_store(store);
