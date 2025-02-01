@@ -37,6 +37,7 @@ void free_nsw_store(NSWStore *store) {
     free_nsw_node(node);
     node = next;
   }
+  free(store);
 }
 
 static NSWEdge *new_nsw_edge(int id, NSWNode *node) {

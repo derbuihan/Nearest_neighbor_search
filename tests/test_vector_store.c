@@ -71,7 +71,7 @@ void test_vector_store(StoreType store_type) {
 
 int main() {
   test_vector_store(STORE_LINEAR);
-  // test_vector_store(STORE_NSW);
+  test_vector_store(STORE_NSW);
 
   printf("All vector store tests passed!\n");
 }
