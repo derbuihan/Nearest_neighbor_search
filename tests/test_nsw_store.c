@@ -147,6 +147,6 @@ int main() {
   test_is_equal_nsw_store();
   test_save_load_linear_store();
 
-  printf("All linear store tests passed!\n");
+  printf("All nsw store tests passed!\n");
   return 0;
 }

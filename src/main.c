@@ -18,6 +18,7 @@ void set_vector_store_from_dataset(VectorStore *store, Dataset *dataset) {
 }
 
 void save_nsw_index(Dataset *dataset, char *filename, StoreType store_type) {
+  remove(filename);
   VectorStore *store = new_vector_store(store_type);
   set_vector_store_from_dataset(store, dataset);
 
@@ -41,10 +42,10 @@ int main(void) {
   char *index_files[] = {"awsdocs.linear.index", "awsdocs.nsw.index"};
 
   // Save Indexes
-  // Dataset *dataset = load_dataset(awsdocs);
-  // for (int i = 0; i < 2; i++) {
-  //   save_nsw_index(dataset, index_files[i], types[i]);
-  // }
+  Dataset *dataset = load_dataset(awsdocs);
+  for (int i = 0; i < 2; i++) {
+    save_nsw_index(dataset, index_files[i], types[i]);
+  }
 
   // Load Indexes
   VectorStore *stores[2];
@@ -79,6 +80,7 @@ int main(void) {
 
     for (int j = 0; j < num_queries; j++) {
       search_vectors(store, query[j], top_k, result_ids, result_dists);
+      printf("Reuslt: %d %d %d\n", result_ids[0], result_ids[1], result_ids[2]);
     }
 
     end_t = clock();
@@ -97,7 +99,7 @@ int main(void) {
   }
 
   // Free Memory
-  // free_dataset(dataset);
+  free_dataset(dataset);
   for (int i = 0; i < 2; i++) {
     free_vector_store(stores[i]);
   }
