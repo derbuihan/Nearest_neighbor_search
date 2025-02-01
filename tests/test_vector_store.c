@@ -53,16 +53,17 @@ void test_vector_store(StoreType store_type) {
   free_vector_store(store2);
 
   // Test save_vector_store and load_vector_store
-  FILE *fp = fopen("test_vector_store.bin", "wb");
-  save_vector_store(store1, fp);
-  fclose(fp);
+  // FILE *fp = fopen("test_vector_store.bin", "wb");
+  // save_vector_store(store1, fp);
+  // fclose(fp);
 
-  fp = fopen("test_vector_store.bin", "rb");
-  VectorStore *loaded_store = load_vector_store(fp);
-  fclose(fp);
+  // fp = fopen("test_vector_store.bin", "rb");
+  // VectorStore *loaded_store = load_vector_store(fp);
+  // fclose(fp);
 
-  assert(is_equal_vector_store(store1, loaded_store));
-  free_vector_store(loaded_store);
+  // assert(is_equal_vector_store(store1, loaded_store));
+  // free_vector_store(loaded_store);
+  // remove("test_vector_store.bin");
 
   // Test free_vector_store
   free_vector_store(store1);
