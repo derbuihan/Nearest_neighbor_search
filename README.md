@@ -5,7 +5,7 @@ A C implementation of nearest neighbor search algorithms for multidimensional po
 ## Algorithms
 
 - [x] Linear Search
-- [ ] Navigable Small World Graph (NSW)
+- [x] Navigable Small World Graph (NSW)
 - [ ] Hierarchical Navigable Small World Graph (HNSW)
 
 ## Installation
