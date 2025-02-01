@@ -34,7 +34,7 @@ void test_add_vector_nsw_store() {
 
   assert(store->num_vectors == 4);
   assert(store->root->id == 3);
-  assert(store->root->num_edges == 2);
+  assert(store->root->num_edges == 1);
   for (NSWEdge *edge = store->root->edges; edge; edge = edge->next) {
     assert(edge->id == 0 || edge->id == 1);
     assert(edge->node->id == 1 || edge->node->id == 2);

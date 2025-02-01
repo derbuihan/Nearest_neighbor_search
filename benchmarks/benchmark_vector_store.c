@@ -33,7 +33,9 @@ void benchmark_vector_store(VectorStore *store, Vector **queries,
     int result_ids[top_k];
     float result_dists[top_k];
     search_vectors(store, queries[i], top_k, result_ids, result_dists);
-    printf("Result: %d %d %d\n", result_ids[0], result_ids[1], result_ids[2]);
+    printf("Result: (%d, %.3f) (%d, %.3f) (%d, %.3f)\n", result_ids[0],
+           result_dists[0], result_ids[1], result_dists[1], result_ids[2],
+           result_dists[2]);
   }
 
   end_t = clock();
@@ -50,10 +52,10 @@ void benchmark_vector_store(VectorStore *store, Vector **queries,
 }
 
 int main() {
-  int num_vectors = 1024;
+  int num_vectors = 16384;
   int num_dimensions = 1536;
   int num_queries = 3;
-  int top_k = 10;
+  int top_k = 3;
 
   Vector **queries = create_vectors(num_queries, num_dimensions);
   Vector **vectors = create_vectors(num_vectors, num_dimensions);

@@ -65,15 +65,6 @@ static NSWNode *new_nsw_node(int id, Vector *v, int max_degree) {
   return node;
 }
 
-static NSWNode *get_nsw_node(NSWStore *store, int id) {
-  NSWNode *node = store->root;
-  while (node) {
-    if (node->id == id) return node;
-    node = node->next;
-  }
-  return NULL;
-}
-
 void add_vector_nsw_store(NSWStore *store, Vector *v) {
   NSWNode *root = new_nsw_node(store->num_vectors++, v, store->max_degree);
   root->next = store->root;
@@ -108,7 +99,7 @@ void add_vector_nsw_store(NSWStore *store, Vector *v) {
   }
 
   // Add edges to the graph
-  while (closest->size > 0 && root->num_edges < root->max_degree) {
+  while (closest->size > 0 && root->num_edges < root->max_degree / 2) {
     NSWNode *node;
     float priority;
     pop_priority_queue(closest, (void **)&node, &priority);
